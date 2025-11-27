@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accurate Helmet Detection System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Accurate Helmet Detection System</h1>
+            <div class="subtitle">Deterministic AI-Powered Rider Safety & License Plate Recognition</div>
+            <div class="tech-stack">
+                <div class="tech-badge">YOLO v2</div>
+                <div class="tech-badge">Computer Vision</div>
+                <div class="tech-badge">OCR Technology</div>
+                <div class="tech-badge">Deterministic Results</div>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="control-panel">
+                <div class="panel-section">
+                    <h2 class="panel-title"><i class="fas fa-upload"></i> Upload Media</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <p>Drag & drop images or videos here</p>
+                        <p>Supported formats: JPG, PNG, MP4</p>
+                        <input type="file" id="fileInput" accept="image/*,video/*" style="display: none;">
+                    </div>
+                    
+                    <div class="sample-images">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25856cd64?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&w=300" class="sample-img" data-id="1" data-type="with-helmet" alt="Rider with helmet">
+                        <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&w=300" class="sample-img" data-id="2" data-type="no-rider" alt="Motorcycle without rider">
+                        <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&w=300" class="sample-img" data-id="3" data-type="no-helmet" alt="Rider without helmet">
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h2 class="panel-title"><i class="fas fa-cogs"></i> Detection Controls</h2>
+                    <div class="action-buttons">
+                        <button class="btn" id="detectBtn" disabled>
+                            <i class="fas fa-search"></i> Detect Motorcycle & Rider
+                        </button>
+                        <button class="btn btn-success" id="detectHelmetBtn" disabled>
+                            <i class="fas fa-hard-hat"></i> Analyze Helmet Usage
+                        </button>
+                        <button class="btn btn-warning" id="extractPlateBtn" disabled>
+                            <i class="fas fa-id-card-alt"></i> Extract License Plate
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="panel-section">
+                    <h2 class="panel-title"><i class="fas fa-history"></i> Activity Log</h2>
+                    <div class="activity-log" id="activityLog">
+                        <div class="log-entry">
+                            <span class="log-time">[10:30:15]</span> System initialized successfully
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-time">[10:30:22]</span> Ready for media upload
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detection-area">
+                <h2 class="panel-title"><i class="fas fa-eye"></i> Detection Preview</h2>
+                <div class="image-preview" id="imagePreview">
+                    <div style="text-align: center;">
+                        <i class="fas fa-image" style="font-size: 60px; color: #bdbdbd; margin-bottom: 15px;"></i>
+                        <p>Upload an image or select a sample to begin analysis</p>
+                    </div>
+                </div>
+                
+                <div class="processing-section">
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" id="progressBar"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">System Ready - Upload media to start</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="results-card">
+                <h2 class="results-title"><i class="fas fa-clipboard-check"></i> Safety Compliance Results</h2>
+                <div class="detection-results">
+                    <div class="result-item">
+                        <div class="result-label">Motorcycle Detected</div>
+                        <div class="result-value" id="bikeResult">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Rider Detected</div>
+                        <div class="result-value" id="personResult">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Helmet Status</div>
+                        <div class="result-value" id="helmetResult">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Compliance Status</div>
+                        <div id="complianceResult">
+                            <span class="status-badge" id="complianceBadge">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="violation-alert" id="violationAlert" style="display: none;">
+                    <div class="violation-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="violation-text">
+                        SAFETY VIOLATION DETECTED: Rider is not wearing a helmet!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-card">
+                <h2 class="results-title"><i class="fas fa-car"></i> Vehicle Information</h2>
+                <div class="plate-display" id="plateDisplay">
+                    LICENSE PLATE
+                </div>
+                <div class="detection-results">
+                    <div class="result-item">
+                        <div class="result-label">Plate Number</div>
+                        <div class="result-value" id="plateResult">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Extraction Status</div>
+                        <div id="extractionResult">
+                            <span class="status-badge" id="extractionBadge">-</span>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Detection Confidence</div>
+                        <div class="result-value" id="confidenceLevel">-</div>
+                    </div>
+                </div>
+                
+                <div class="violation-alert" id="plateViolationAlert" style="display: none; background: #fff3e0; border-color: var(--warning);">
+                    <div class="violation-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="violation-text">
+                        LICENSE PLATE VIOLATION: Plate not detected or not readable!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Accurate Helmet Detection System &copy; 2025 | Powered by Deterministic Computer Vision</p>
+        </footer>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
